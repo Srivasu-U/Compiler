@@ -1,7 +1,7 @@
 package object
 
 import (
-	"Compiler/interpreted-monkey/src/ast"
+	"Compiler/c-monkey-v1/src/ast"
 	"bytes"
 	"fmt"
 	"hash/fnv"

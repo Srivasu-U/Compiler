@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"Compiler/interpreted-monkey/src/object"
+	"Compiler/c-monkey-v1/src/object"
 	"fmt"
 )
 

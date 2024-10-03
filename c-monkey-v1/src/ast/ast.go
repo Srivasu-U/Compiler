@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"Compiler/interpreted-monkey/src/token"
+	"Compiler/c-monkey-v1/src/token"
 	"bytes"
 	"strings"
 )

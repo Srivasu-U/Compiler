@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"Compiler/interpreted-monkey/src/ast"
-	"Compiler/interpreted-monkey/src/object"
+	"Compiler/c-monkey-v1/src/ast"
+	"Compiler/c-monkey-v1/src/object"
 	"fmt"
 )
 

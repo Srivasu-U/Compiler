@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Compiler/interpreted-monkey/src/repl"
+	"Compiler/c-monkey-v1/src/repl"
 	"fmt"
 	"os"
 	"os/user"

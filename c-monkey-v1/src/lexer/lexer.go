@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"Compiler/interpreted-monkey/src/token"
+	"Compiler/c-monkey-v1/src/token"
 )
 
 type Lexer struct {
