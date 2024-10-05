@@ -13,3 +13,12 @@
     - When we come across an integer literal (a constant expression) while compiling, we’ll evaluate it and keep track of resulting `*object.Integer` by storing it in memory and assigning it a number. 
     - In the bytecode instructions we’ll refer to the `*object.Integer` by this number.
     - After we’re done compiling and pass the instructions to the VM for execution, we’ll also hand over all the constants we’ve found by putting them in a data structure – our *constant pool* – where the number that has been assigned to each constant can be used as an index to retrieve it.
+
+### Basic compiler
+- The first version of the compiler only needs to produce two `OpConstant` instructions to load values `1` and `2` on to the stack
+    - First traverse the AST
+    - Find `*ast.IntegerLiteral`
+    - Eval into `*object.Integer`
+    - Add to constant pool
+    - Emit `OpConstant` instructions to reference constants
+- The compiler must also be able to emit Bytecode instructions in human readable lang, instead of bytes for easier testing and debugging.
