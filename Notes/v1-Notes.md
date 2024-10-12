@@ -22,3 +22,11 @@
     - Add to constant pool
     - Emit `OpConstant` instructions to reference constants
 - The compiler must also be able to emit Bytecode instructions in human readable lang, instead of bytes for easier testing and debugging.
+
+
+### VM
+- Basic VM to deal with the `Bytecode` produced by the compiler
+    - Fetch, decode and execute `OpConstant` instructions
+    - At the end, the numbers should be pushed on to the VM's stack
+- Lexed -> Parsed -> Compiled -> Passed into new instance of VM
+- 
