@@ -13,6 +13,8 @@
     - When we come across an integer literal (a constant expression) while compiling, we’ll evaluate it and keep track of resulting `*object.Integer` by storing it in memory and assigning it a number. 
     - In the bytecode instructions we’ll refer to the `*object.Integer` by this number.
     - After we’re done compiling and pass the instructions to the VM for execution, we’ll also hand over all the constants we’ve found by putting them in a data structure – our *constant pool* – where the number that has been assigned to each constant can be used as an index to retrieve it.
+- I don't fully understand why we wrote a `Lookup()` method but never seem to use it.
+    - Something about being too slow to move around a byte and perform the lookup every single time
 
 ### Basic compiler
 - The first version of the compiler only needs to produce two `OpConstant` instructions to load values `1` and `2` on to the stack
@@ -29,4 +31,3 @@
     - Fetch, decode and execute `OpConstant` instructions
     - At the end, the numbers should be pushed on to the VM's stack
 - Lexed -> Parsed -> Compiled -> Passed into new instance of VM
-- 
