@@ -12,6 +12,9 @@ type Opcode byte         // Opcodes are always a single byte
 const ( // Each Opcode is going to have a readable name instead of some arbitrary byte value that will need to be memorized
 	OpConstant Opcode = iota // OpConstant is for the operation constants , ie, operands
 	OpAdd
+	OpSub
+	OpMul
+	OpDiv
 	OpPop
 )
 
@@ -23,6 +26,9 @@ type Definition struct { // To keep track of how many operands an opcode has and
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}}, // OpConstant operand is 2 bytes wide, ie, uint16
 	OpAdd:      {"OpAdd", []int{}},
+	OpSub:      {"OpSub", []int{}},
+	OpMul:      {"OpMul", []int{}},
+	OpDiv:      {"OpDiv", []int{}},
 	OpPop:      {"OpPop", []int{}},
 }
 
