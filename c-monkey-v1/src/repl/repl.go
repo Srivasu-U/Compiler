@@ -42,7 +42,7 @@ func Start(in io.Reader, out io.Writer) {
 		machine := vm.New(comp.Bytecode())
 		err = machine.Run()
 		if err != nil {
-			fmt.Fprint(out, "Woops! Executing bytecode failed:\n %s\n", err)
+			fmt.Fprintf(out, "Woops! Executing bytecode failed:\n %s\n", err)
 			continue
 		}
 
