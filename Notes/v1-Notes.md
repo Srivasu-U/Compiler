@@ -24,6 +24,9 @@
     - Add to constant pool
     - Emit `OpConstant` instructions to reference constants
 - The compiler must also be able to emit Bytecode instructions in human readable lang, instead of bytes for easier testing and debugging.
+- To add a new `OpCode`, we define it in `code.go` consts and then add a `definition` for it
+    - Then we make the relevant changes in `compiler.go` to get the proper emits
+    - `vm.go` is changed at the end to ensure proper execution
 
 
 ### VM
@@ -31,3 +34,7 @@
     - Fetch, decode and execute `OpConstant` instructions
     - At the end, the numbers should be pushed on to the VM's stack
 - Lexed -> Parsed -> Compiled -> Passed into new instance of VM
+- To add values, ie, perform *stack arithmetic*
+    - Pop operands
+    - Perform operation
+    - Push on stack
