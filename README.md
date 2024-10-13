@@ -4,8 +4,10 @@
 - This is a direct extension from the [Interpreter](https://github.com/Srivasu-U/Interpreter), where Monkey was an interpreted language
 - Each subdirectory has its own incremental development
     - `interpreted-monkey` is the final stage from the `Interpreter` code. This is the base on which the compiler is started to be built
-    - `c-monkey-v1` has the beginnings of a compiler and VM
+    - `c-monkey-v1` has the beginnings of a compiler and VM. 
+        - Support for addition operation only, and the foundation of bytecode.
     - `c-monkey-v2` enables the compilation of execution of expressions, infix and postfix.
+        - Support for other arithmetic operations
     - `Notes` has the relevant notes for each subdirectory. Written as I went through each development stage
 
 ### Execution of code
