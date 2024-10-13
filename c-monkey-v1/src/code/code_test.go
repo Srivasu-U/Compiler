@@ -13,6 +13,7 @@ func TestMake(t *testing.T) {
 		65534 was chosen to actually verify the BigEndian encoding with most significant bit first.
 		65534 evaluates to 0xFF 0xFE which makes it easier to compare
 		*/
+		{OpAdd, []int{}, []byte{byte(OpAdd)}},
 	}
 
 	for _, tt := range tests {
@@ -32,14 +33,14 @@ func TestMake(t *testing.T) {
 
 func TestInstructionsString(t *testing.T) {
 	instructions := []Instructions{
-		Make(OpConstant, 1),
+		Make(OpAdd),
 		Make(OpConstant, 2),
 		Make(OpConstant, 65535),
 	}
 
-	expected := `0000 OpConstant 1
-0003 OpConstant 2
-0006 OpConstant 65535
+	expected := `0000 OpAdd
+0001 OpConstant 2
+0004 OpConstant 65535
 `
 
 	concatted := Instructions{} // Once again, flattening [][]byte to []byte
