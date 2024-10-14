@@ -69,6 +69,12 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+
+		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan, code.OpGreaterThanOrEqual:
+			err := vm.executeComparison(op)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -126,4 +132,48 @@ func (vm *VM) executeBinaryIntegerOperation(op code.Opcode, left, right object.O
 	}
 
 	return vm.push(&object.Integer{Value: result})
+}
+
+func (vm *VM) executeComparison(op code.Opcode) error {
+	right := vm.pop() // Right value always popped first, since it was pushed most recently, ie. LIFO
+	left := vm.pop()
+
+	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
+		return vm.executeIntegerComparison(op, left, right)
+	}
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(nativeBooltoBooleanObject(left == right))
+	case code.OpNotEqual:
+		return vm.push(nativeBooltoBooleanObject(left != right))
+	default:
+		return fmt.Errorf("unknown operator: %d (%s %s)", op, left.Type(), right.Type())
+	}
+}
+
+func (vm *VM) executeIntegerComparison(op code.Opcode, left, right object.Object) error {
+	rightValue := right.(*object.Integer).Value
+	leftValue := left.(*object.Integer).Value
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(nativeBooltoBooleanObject(leftValue == rightValue))
+	case code.OpNotEqual:
+		return vm.push(nativeBooltoBooleanObject(leftValue != rightValue))
+	case code.OpGreaterThan:
+		return vm.push(nativeBooltoBooleanObject(leftValue > rightValue))
+	case code.OpGreaterThanOrEqual:
+		return vm.push(nativeBooltoBooleanObject(leftValue >= rightValue))
+	default:
+		return fmt.Errorf("unknown operator: %d", op)
+	}
+}
+
+func nativeBooltoBooleanObject(input bool) *object.Boolean {
+	if input {
+		return True
+	}
+
+	return False
 }
