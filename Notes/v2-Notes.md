@@ -10,12 +10,22 @@
     - The opcode for this is `OpPop`
 - In order to check if the stack state is correct on the VM, we have to essentially do "Brother VM, this *should* have been on the stack right before this got popped off"
 
-### Stack arithmetic
+### Stack arithmetic and comparisons
 - Stack arithmetic: `+, -, *, /`. `OpCodes` are
     - `+`: `OpAdd`
     - `-`: `OpSub`
     - `*`: `OpMul`
     - `/`: `OpDiv`
+- Comparisons are:
+    - `==`: `OpEqual`
+    - `!=`: `OpNotEqual`
+    - `>`: `OpGreaterThan` (This is also used for lesser than by just reordering the operands. For example, `3 > 5` or `5 < 3` produces the same result)
+    - `>=`: `OpGreaterThanOrEqual` (Same as above with reordering)
+- This reordering is only possible with compilation and not interpretation because of the formation of a tree structure during interpretation
+    - Our compiler will essentially take any `<` expression and reorder the operands to give us a `>` expression
+- Essentially, neither `<` nor `<=` even exist for our VM, it doesn't know the meaning of that symbol because we have not defined it
+- Just as a reminder: ***This doesn't have to be executed like this***. 
+    - We can just make `<` and `<=` opcodes like `OpLessThan` and `OpLessThanOrEqual` and we would be fine
 - `vm.Run()` takes care of the actual arithmetic. Check `TestIntegerArithmetic` from `vm_test.go` to see the full range of execution
 
 ### Booleans
