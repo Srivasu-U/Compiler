@@ -38,3 +38,5 @@
     - Pop operands
     - Perform operation
     - Push on stack
+- Stack pointer points to the *next* free space, not the actual top element.
+- Stack size is 2048 (arbitrary, but large enough to not cause issues)

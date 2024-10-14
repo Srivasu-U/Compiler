@@ -9,3 +9,17 @@
     - This step must also be emitted to ensure proper tracking
     - The opcode for this is `OpPop`
 - In order to check if the stack state is correct on the VM, we have to essentially do "Brother VM, this *should* have been on the stack right before this got popped off"
+
+### Stack arithmetic
+- Stack arithmetic: `+, -, *, /`. `OpCodes` are
+    - `+`: `OpAdd`
+    - `-`: `OpSub`
+    - `*`: `OpMul`
+    - `/`: `OpDiv`
+- `vm.Run()` takes care of the actual arithmetic. Check `TestIntegerArithmetic` from `vm_test.go` to see the full range of execution
+
+### Booleans
+- With our compiler and VM, when encountering a boolean value (`true` or `false`), this must also be loaded on to the stack
+- Boolean values are not treated as `OpConstants` to save on resources since these require lesser processing
+    - So instead we have `OpTrue` and `OpFalse`
+    - Both of these are like `OpPop` where they have no operands, just the opcode tells what is to be loaded on to the stack
