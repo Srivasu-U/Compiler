@@ -18,6 +18,10 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpPop
 	OpTrue
 	OpFalse
+	OpEqual
+	OpNotEqual
+	OpGreaterThan
+	OpGreaterThanOrEqual
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -26,14 +30,18 @@ type Definition struct { // To keep track of how many operands an opcode has and
 }
 
 var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}}, // OpConstant operand is 2 bytes wide, ie, uint16
-	OpAdd:      {"OpAdd", []int{}},
-	OpSub:      {"OpSub", []int{}},
-	OpMul:      {"OpMul", []int{}},
-	OpDiv:      {"OpDiv", []int{}},
-	OpPop:      {"OpPop", []int{}},
-	OpTrue:     {"OpTrue", []int{}},
-	OpFalse:    {"OpFalse", []int{}},
+	OpConstant:           {"OpConstant", []int{2}}, // OpConstant operand is 2 bytes wide, ie, uint16
+	OpAdd:                {"OpAdd", []int{}},
+	OpSub:                {"OpSub", []int{}},
+	OpMul:                {"OpMul", []int{}},
+	OpDiv:                {"OpDiv", []int{}},
+	OpPop:                {"OpPop", []int{}},
+	OpTrue:               {"OpTrue", []int{}},
+	OpFalse:              {"OpFalse", []int{}},
+	OpEqual:              {"OpEqual", []int{}},
+	OpNotEqual:           {"OpNotEqual", []int{}},
+	OpGreaterThan:        {"OpGreaterThan", []int{}},
+	OpGreaterThanOrEqual: {"OpGreaterthanOrEqual", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {

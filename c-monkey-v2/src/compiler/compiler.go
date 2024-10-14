@@ -42,6 +42,25 @@ func (c *Compiler) Compile(node ast.Node) error {
 		c.emit(code.OpPop)
 
 	case *ast.InfixExpression:
+		// if < or <= reorder the execution of stack push for operands, ie, right first and then left
+		if node.Operator == "<" || node.Operator == "<=" {
+			err := c.Compile(node.Right)
+			if err != nil {
+				return err
+			}
+
+			err = c.Compile(node.Left)
+			if err != nil {
+				return err
+			}
+
+			if node.Operator == "<" {
+				c.emit(code.OpGreaterThan)
+			} else {
+				c.emit(code.OpGreaterThanOrEqual)
+			}
+			return nil
+		}
 		err := c.Compile(node.Left)
 		if err != nil {
 			return err
@@ -61,6 +80,14 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpMul)
 		case "/":
 			c.emit(code.OpDiv)
+		case ">":
+			c.emit(code.OpGreaterThan)
+		case ">=":
+			c.emit(code.OpGreaterThanOrEqual)
+		case "==":
+			c.emit(code.OpEqual)
+		case "!=":
+			c.emit(code.OpNotEqual)
 		default:
 			return fmt.Errorf("Unknown operator %s", node.Operator)
 		}
