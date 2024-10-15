@@ -1,9 +1,9 @@
 package evaluator
 
 import (
-	"Compiler/c-monkey-v2/src/lexer"
-	"Compiler/c-monkey-v2/src/object"
-	"Compiler/c-monkey-v2/src/parser"
+	"Compiler/c-monkey-v3/src/lexer"
+	"Compiler/c-monkey-v3/src/object"
+	"Compiler/c-monkey-v3/src/parser"
 	"testing"
 )
 

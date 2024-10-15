@@ -1,9 +1,9 @@
 package vm
 
 import (
-	"Compiler/c-monkey-v2/src/code"
-	"Compiler/c-monkey-v2/src/compiler"
-	"Compiler/c-monkey-v2/src/object"
+	"Compiler/c-monkey-v3/src/code"
+	"Compiler/c-monkey-v3/src/compiler"
+	"Compiler/c-monkey-v3/src/object"
 	"fmt"
 )
 

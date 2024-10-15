@@ -1,11 +1,11 @@
 package vm
 
 import (
-	"Compiler/c-monkey-v2/src/ast"
-	"Compiler/c-monkey-v2/src/compiler"
-	"Compiler/c-monkey-v2/src/lexer"
-	"Compiler/c-monkey-v2/src/object"
-	"Compiler/c-monkey-v2/src/parser"
+	"Compiler/c-monkey-v3/src/ast"
+	"Compiler/c-monkey-v3/src/compiler"
+	"Compiler/c-monkey-v3/src/lexer"
+	"Compiler/c-monkey-v3/src/object"
+	"Compiler/c-monkey-v3/src/parser"
 	"fmt"
 	"testing"
 )
