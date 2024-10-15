@@ -22,6 +22,8 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpNotEqual
 	OpGreaterThan
 	OpGreaterThanOrEqual
+	OpMinus
+	OpBang
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -42,6 +44,8 @@ var definitions = map[Opcode]*Definition{
 	OpNotEqual:           {"OpNotEqual", []int{}},
 	OpGreaterThan:        {"OpGreaterThan", []int{}},
 	OpGreaterThanOrEqual: {"OpGreaterthanOrEqual", []int{}},
+	OpMinus:              {"OpMinus", []int{}},
+	OpBang:               {"OpBang", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {
