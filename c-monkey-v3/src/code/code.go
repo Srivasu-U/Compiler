@@ -24,6 +24,8 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpGreaterThanOrEqual
 	OpMinus
 	OpBang
+	OpJumpNotTruthy // Value on top of the stack is not truthy, aka, it is false
+	OpJump          // Unconditional jump
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -46,6 +48,8 @@ var definitions = map[Opcode]*Definition{
 	OpGreaterThanOrEqual: {"OpGreaterthanOrEqual", []int{}},
 	OpMinus:              {"OpMinus", []int{}},
 	OpBang:               {"OpBang", []int{}},
+	OpJumpNotTruthy:      {"OpJumpNotTruthy", []int{2}},
+	OpJump:               {"OpJump", []int{2}},
 }
 
 func Lookup(op byte) (*Definition, error) {
