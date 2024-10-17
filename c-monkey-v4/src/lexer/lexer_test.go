@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"Compiler/c-monkey-v3/src/token"
+	"Compiler/c-monkey-v4/src/token"
 	"testing"
 )
 
