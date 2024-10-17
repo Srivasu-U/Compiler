@@ -87,6 +87,19 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+
+		case code.OpJump:
+			pos := int(code.ReadUint16(vm.instructions[ip+1:])) // Read the operand right next to the OpCode
+			ip = pos - 1                                        // set instruction pointer to the target of our jump. We do -1 so that the increment of the for loop can actually get us to the target
+
+		case code.OpJumpNotTruthy:
+			pos := int(code.ReadUint16(vm.instructions[ip+1:])) // Read operand right next to Opcode
+			ip += 2                                             // Increment to not read operand again in the next cycle
+
+			condition := vm.pop()     // Pop the result of the condition
+			if !isTruthy(condition) { // Jump if not truthy
+				ip = pos - 1
+			}
 		}
 	}
 
@@ -108,6 +121,16 @@ func (vm *VM) pop() object.Object {
 	o := vm.stack[vm.sp-1]
 	vm.sp--
 	return o
+}
+
+func isTruthy(obj object.Object) bool {
+	switch obj := obj.(type) {
+	case *object.Boolean:
+		return obj.Value
+
+	default:
+		return true
+	}
 }
 
 func (vm *VM) executeBinaryOperation(op code.Opcode) error {
