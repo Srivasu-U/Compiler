@@ -22,6 +22,9 @@
     - We can modify the operand to the jump instruction *after* compiling `node.Consequence` which gives us the right position to jump to
     - This is called ***back-patching***, common in single-pass compilers, ie, walks through the AST only once
     - Essentially, we will keep emitting `9999` as the operand to the jump instruction, until we figure out where to jump to. Then we'll go back and correct the offset
+    - We emit `OpJump` and `OpJumpNotTruthy`, aka, both the jump locations, no matter what, during compilation. Both of these are also updated accordingly
+        -   `OpJumpNotTruthy` is updated after execution of consquence
+        - `OpJump` is updated after execution of alternative
     - From `compiler.go`
     ```
     [...]
@@ -31,43 +34,45 @@
 			return err
 		}
 
-		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999)
+		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999) // Jump location if the condition is false
 
-		err = c.Compile(node.Consequence) // If block gets compiled regardless. Understand that this is compilation, and not actual execution
+		err = c.Compile(node.Consequence)
 		if err != nil {
 			return err
 		}
 
-		if c.lastInstructionIsPop() { // Last pop instruction of consequence expression is removed
+		if c.lastInstructionIsPop() { // We remove the last pop because Block expressions always produce an OpPop which is redundant and we need to keep the final value that the block evaluates to
 			c.removeLastPop()
 		}
 
+		// Jump location that is always executed to skip over the alternative
+		jumpPos := c.emit(code.OpJump, 9999)
+
+		// This basically gives us the offset after the execution of Consequence is done and where we want to jump to
+		afterConsequencePos := len(c.instructions)
+		// Going back and changing the operand, ie, the position where we jump to, instead of 9999
+		c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
+
 		if node.Alternative == nil {
-			// This basically gives us the offset after the execution of Consequence is done and where we want to jump to
-			afterConsequencePos := len(c.instructions)
-
-			// Going back and changing the operand, ie, the position where we jump to, instead of 9999
-			c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
+			c.emit(code.OpNull)
 		} else {
-			// Emit an OpJump
-			jumpPos := c.emit(code.OpJump, 9999)
-
-			afterConsequencePos := len(c.instructions)
-			c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
-
-			err := c.Compile(node.Alternative) // Alternative block, aka, else block is compiled
+			err := c.Compile(node.Alternative)
 			if err != nil {
 				return err
 			}
 
-			if c.lastInstructionIsPop() { // Last pop instruction of alternative expression is removed
+			if c.lastInstructionIsPop() {
 				c.removeLastPop()
 			}
-
-			afterAlternativePos := len(c.instructions) // Replacing the operand of the jump instruction
-			c.changeOperand(jumpPos, afterAlternativePos)
 		}
+		afterAlternativePos := len(c.instructions)
+		c.changeOperand(jumpPos, afterAlternativePos)
     [...]
     ```
 - We cannot `OpPop` an evaluated value after either the consequence or the alternative evaluates, because then we couldn't do something like `let x = if (5 > 3) { 5 } else { 3 }`.
     - If we evaluate to `5` and then `OpPop` is, `x` would be `nil`, not `5` which is not correct
+
+- When we have something like `if (false) { 3 }`, then the consequence is not executed and there is no alternative to be executed.
+    - We make use of `*object.Null` in this case, and the VM must push a `Null` on to the stack using opcode `OpNull`
+    - This is done by making the VM create its own alternative branch when one doesn't exist and the only instruction in the alternative is to push the `Null` on to the stack
+    - Negation of null, ie, `!Null`, is truthy in Monkey
