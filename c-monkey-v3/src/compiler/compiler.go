@@ -133,29 +133,28 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 
-		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999)
+		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999) // Jump location if the condition is false
 
 		err = c.Compile(node.Consequence)
 		if err != nil {
 			return err
 		}
 
-		if c.lastInstructionIsPop() {
+		if c.lastInstructionIsPop() { // We remove the last pop because Block expressions always produce an OpPop which is redundant and we need to keep the final value that the block evaluates to
 			c.removeLastPop()
 		}
 
+		// Jump location that is always executed to skip over the alternative
+		jumpPos := c.emit(code.OpJump, 9999)
+
+		// This basically gives us the offset after the execution of Consequence is done and where we want to jump to
+		afterConsequencePos := len(c.instructions)
+		// Going back and changing the operand, ie, the position where we jump to, instead of 9999
+		c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
+
 		if node.Alternative == nil {
-			// This basically gives us the offset after the execution of Consequence is done and where we want to jump to
-			afterConsequencePos := len(c.instructions)
-			// Going back and changing the operand, ie, the position where we jump to, instead of 9999
-			c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
+			c.emit(code.OpNull)
 		} else {
-			// Emit an OpJump
-			jumpPos := c.emit(code.OpJump, 9999)
-
-			afterConsequencePos := len(c.instructions)
-			c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
-
 			err := c.Compile(node.Alternative)
 			if err != nil {
 				return err
@@ -164,10 +163,9 @@ func (c *Compiler) Compile(node ast.Node) error {
 			if c.lastInstructionIsPop() {
 				c.removeLastPop()
 			}
-
-			afterAlternativePos := len(c.instructions)
-			c.changeOperand(jumpPos, afterAlternativePos)
 		}
+		afterAlternativePos := len(c.instructions)
+		c.changeOperand(jumpPos, afterAlternativePos)
 
 	case *ast.BlockStatement:
 		for _, s := range node.Statements {

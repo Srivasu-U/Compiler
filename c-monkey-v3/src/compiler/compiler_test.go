@@ -298,14 +298,18 @@ func TestConditionals(t *testing.T) {
 				// 0000
 				code.Make(code.OpTrue), // Emit true
 				// 0001
-				code.Make(code.OpJumpNotTruthy, 7), // If not true, jump to 7
+				code.Make(code.OpJumpNotTruthy, 10), // If not true, jump to 10
 				// 0004
 				code.Make(code.OpConstant, 0), // push 10 on stack
 				// 0007
-				code.Make(code.OpPop), // Pop 10
-				// 0008
-				code.Make(code.OpConstant, 1), // Push 3333 on stack
+				code.Make(code.OpJump, 11), // Jump to 11
+				// 0010
+				code.Make(code.OpNull), // Push Null on to stack
 				// 0011
+				code.Make(code.OpPop), // Pop 10 (Because OpJump jumps over the alternative and OpNull is in the alternative)
+				// 0012
+				code.Make(code.OpConstant, 1), // Push 3333
+				// 0015
 				code.Make(code.OpPop), // Pop 3333
 			},
 		},
