@@ -195,6 +195,15 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return fmt.Errorf("undefined vairable %s", node.Value) // Compile time error instead of runtime
 		}
 		c.emit(code.OpGetGlobal, symbol.Index)
+
+	case *ast.ArrayLiteral:
+		for _, e := range node.Elements {
+			err := c.Compile(e)
+			if err != nil {
+				return err
+			}
+		}
+		c.emit(code.OpArray, len(node.Elements))
 	}
 
 	return nil

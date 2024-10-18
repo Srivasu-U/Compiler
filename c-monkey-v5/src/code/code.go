@@ -29,6 +29,7 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpNull
 	OpGetGlobal
 	OpSetGlobal
+	OpArray
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -58,6 +59,7 @@ var definitions = map[Opcode]*Definition{
 	OpNull:               {"OpNull", []int{}},
 	OpGetGlobal:          {"OpGetGlobal", []int{2}},
 	OpSetGlobal:          {"OpSetGlobal", []int{2}},
+	OpArray:              {"OpArray", []int{2}},
 }
 
 func Lookup(op byte) (*Definition, error) {
