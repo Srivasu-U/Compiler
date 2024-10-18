@@ -5,6 +5,7 @@ import (
 	"Compiler/c-monkey-v5/src/code"
 	"Compiler/c-monkey-v5/src/object"
 	"fmt"
+	"sort"
 )
 
 type Compiler struct {
@@ -204,6 +205,30 @@ func (c *Compiler) Compile(node ast.Node) error {
 			}
 		}
 		c.emit(code.OpArray, len(node.Elements))
+
+	case *ast.HashLiteral:
+		keys := []ast.Expression{}
+		for k := range node.Pairs {
+			keys = append(keys, k) // Append keys into a slice
+		}
+		// Sort keys in the slice. We sort because Go does not promise ordering in maps.
+		// We need the instructions we compile to be ordered to correctly know what to expect.
+		// Without sorting is fine to be passed into the VM, we just need to the ordering to test correctly
+		sort.Slice(keys, func(i, j int) bool {
+			return keys[i].String() < keys[j].String()
+		})
+
+		for _, k := range keys {
+			err := c.Compile(k) // Compile keys
+			if err != nil {
+				return err
+			}
+			err = c.Compile(node.Pairs[k]) // Compile values
+			if err != nil {
+				return err
+			}
+		}
+		c.emit(code.OpHash, len(node.Pairs)*2)
 	}
 
 	return nil
