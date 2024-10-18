@@ -40,3 +40,5 @@
     - Push on stack
 - Stack pointer points to the *next* free space, not the actual top element.
 - Stack size is 2048 (arbitrary, but large enough to not cause issues)
+- Stack arithmetic is really useful in dealing with objects as well, such as arrays (Look at [Array notes](/Notes/v5-Notes.md))
+    - We can create an entire array object by just sending the number of elements that need to be popped off the stack and pushing a new object `*object.Array` on to the stack. How do people even think like this?!
