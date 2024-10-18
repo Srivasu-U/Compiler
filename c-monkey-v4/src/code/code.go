@@ -27,6 +27,8 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpJumpNotTruthy // Value on top of the stack is not truthy, aka, it is false
 	OpJump          // Unconditional jump
 	OpNull
+	OpGetGlobal
+	OpSetGlobal
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -35,7 +37,9 @@ type Definition struct { // To keep track of how many operands an opcode has and
 }
 
 var definitions = map[Opcode]*Definition{
-	OpConstant:           {"OpConstant", []int{2}}, // OpConstant operand is 2 bytes wide, ie, uint16
+	// OpConstant operand is 2 bytes wide, ie, uint16. An array is used to indicate that the length of the array (1):
+	// there is only one operand and the value of that element (2) is the width
+	OpConstant:           {"OpConstant", []int{2}},
 	OpAdd:                {"OpAdd", []int{}},
 	OpSub:                {"OpSub", []int{}},
 	OpMul:                {"OpMul", []int{}},
@@ -52,6 +56,8 @@ var definitions = map[Opcode]*Definition{
 	OpJumpNotTruthy:      {"OpJumpNotTruthy", []int{2}},
 	OpJump:               {"OpJump", []int{2}},
 	OpNull:               {"OpNull", []int{}},
+	OpGetGlobal:          {"OpGetGlobal", []int{2}},
+	OpSetGlobal:          {"OpSetGlobal", []int{2}},
 }
 
 func Lookup(op byte) (*Definition, error) {

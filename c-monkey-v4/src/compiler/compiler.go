@@ -174,6 +174,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 				return err
 			}
 		}
+
+	case *ast.LetStatement:
+		err := c.Compile(node.Value) // Evaluate RHS and put it on the stack
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
