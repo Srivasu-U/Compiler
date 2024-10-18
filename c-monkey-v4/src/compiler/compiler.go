@@ -12,6 +12,7 @@ type Compiler struct {
 	constants           []object.Object    // Internal constant pool
 	lastInstruction     EmittedInstruction // Last instruction
 	previousInstruction EmittedInstruction // The one before last
+	symbolTable         *SymbolTable       // Identifier store
 }
 
 type Bytecode struct { // Both are exportable fields since they start with capitalized letters. This gets passed into the VM
@@ -30,6 +31,7 @@ func New() *Compiler {
 		constants:           []object.Object{},
 		lastInstruction:     EmittedInstruction{},
 		previousInstruction: EmittedInstruction{},
+		symbolTable:         NewSymbolTable(),
 	}
 }
 
@@ -180,6 +182,15 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if err != nil {
 			return err
 		}
+		symbol := c.symbolTable.Define(node.Name.Value)
+		c.emit(code.OpSetGlobal, symbol.Index)
+
+	case *ast.Identifier:
+		symbol, ok := c.symbolTable.Resolve(node.Value)
+		if !ok {
+			return fmt.Errorf("undefined vairable %s", node.Value) // Compile time error instead of runtime
+		}
+		c.emit(code.OpGetGlobal, symbol.Index)
 	}
 
 	return nil
