@@ -12,8 +12,9 @@ let z = x + y;```, diagrammatically, we have
 ![letStack](/Notes/assets/letStack.png)
 
 - Within the VM, a slice is used as a "global store" with the operands from `OpSetGlobal` and `OpGetGlobal` as indices
-    - Execution of `OpSetGlobal` -> pop topmost elem, save in global store at the index of the operand
-    - Execution of `OpGetGlobal` -> Retrieve using index operand and push on to stack
+    - Execution of `OpSetGlobal` -> pop topmost elem, save in global store at the index of the operand. Works in tandem with `*ast.LetStatement`
+    - Execution of `OpGetGlobal` -> Retrieve using index operand and push on to stack. Works in tandem with `*ast.Identifier`
+- Both the stack and global store are slices for index-based accessing, and no overhead during the accessing
 
 ### Symbol tables
 - When compiling say `let x = 33;`, we assign a unique number to `x` because the operands to our opcodes can only be numbers and we cannot just pass `x` to be converted into bytecode
@@ -26,3 +27,4 @@ let z = x + y;```, diagrammatically, we have
             - The table should associate identifiers in the global scope with a unique number (`define`)
             - Get previously associated number for an identifier (`resolve`)
             - An identifier is associated with a `symbol` and the symbol itself contains the information (a `symbol` is a struct for us, basically)
+
