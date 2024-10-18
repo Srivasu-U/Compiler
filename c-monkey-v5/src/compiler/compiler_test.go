@@ -1,11 +1,11 @@
 package compiler
 
 import (
-	"Compiler/c-monkey-v4/src/ast"
-	"Compiler/c-monkey-v4/src/code"
-	"Compiler/c-monkey-v4/src/lexer"
-	"Compiler/c-monkey-v4/src/object"
-	"Compiler/c-monkey-v4/src/parser"
+	"Compiler/c-monkey-v5/src/ast"
+	"Compiler/c-monkey-v5/src/code"
+	"Compiler/c-monkey-v5/src/lexer"
+	"Compiler/c-monkey-v5/src/object"
+	"Compiler/c-monkey-v5/src/parser"
 	"fmt"
 	"testing"
 )
