@@ -203,6 +203,14 @@ func (c *Compiler) Bytecode() *Bytecode {
 	}
 }
 
+// Compiler constructor to maintain symbol table and constants across executions
+func NewWithState(s *SymbolTable, constants []object.Object) *Compiler {
+	compiler := New()
+	compiler.symbolTable = s
+	compiler.constants = constants
+	return compiler
+}
+
 // Adding constant to constant pool
 func (c *Compiler) addConstant(obj object.Object) int {
 	c.constants = append(c.constants, obj)
