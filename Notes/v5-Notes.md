@@ -15,4 +15,9 @@
     - Since these are `ast.Expressions`, compiling them results in instructions that leave N values on the VM’s stack, where N is the number of elements in the array literal. 
     - Then, we’re going to emit an OpArray instruction with the operand being N, the number of elements. This is the end of the compilation.
     - When the VM then executes the OpArray instruction it takes the N elements off the stack, builds an `*object.Array` out of them, and pushes that on to the stack. 
+- The approach is similar for hash, but the underlying structure is a map instead of a slice
+- As a refresher, hashes work like this:
+    - `object.Hash` has a Pairs field that contains a `map[HashKey]HashPair`. 
+    - A HashKey can be created by calling the `HashKey` method of an `object.Hashable`, an interface that `*object.String`, `*object.Boolean` and `*object.Integer` implement. 
+    - A `HashPair` then has a Key and a Value field, both containing an `object.Object`. This is where the real key and the real value are stored.
 
