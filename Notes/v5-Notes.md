@@ -20,4 +20,5 @@
     - `object.Hash` has a Pairs field that contains a `map[HashKey]HashPair`. 
     - A HashKey can be created by calling the `HashKey` method of an `object.Hashable`, an interface that `*object.String`, `*object.Boolean` and `*object.Integer` implement. 
     - A `HashPair` then has a Key and a Value field, both containing an `object.Object`. This is where the real key and the real value are stored.
-
+- For indexing, we have the `OpIndex` opcode, that takes the top two values of the stack: topmost being the index and top-1 being the object to be indexed
+    - `OpIndex` pops both, performs the retrieval and pushes the new value on to the stack
