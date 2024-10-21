@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"Compiler/c-monkey-v5/src/token"
+	"Compiler/c-monkey-v6/src/token"
 	"testing"
 )
 

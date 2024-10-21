@@ -1,11 +1,11 @@
 package repl
 
 import (
-	"Compiler/c-monkey-v5/src/compiler"
-	"Compiler/c-monkey-v5/src/lexer"
-	"Compiler/c-monkey-v5/src/object"
-	"Compiler/c-monkey-v5/src/parser"
-	"Compiler/c-monkey-v5/src/vm"
+	"Compiler/c-monkey-v6/src/compiler"
+	"Compiler/c-monkey-v6/src/lexer"
+	"Compiler/c-monkey-v6/src/object"
+	"Compiler/c-monkey-v6/src/parser"
+	"Compiler/c-monkey-v6/src/vm"
 	"bufio"
 	"fmt"
 	"io"

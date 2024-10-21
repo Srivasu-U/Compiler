@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"Compiler/c-monkey-v5/src/ast"
-	"Compiler/c-monkey-v5/src/lexer"
-	"Compiler/c-monkey-v5/src/token"
+	"Compiler/c-monkey-v6/src/ast"
+	"Compiler/c-monkey-v6/src/lexer"
+	"Compiler/c-monkey-v6/src/token"
 	"fmt"
 	"strconv"
 )

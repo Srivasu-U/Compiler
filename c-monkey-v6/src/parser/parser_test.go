@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"Compiler/c-monkey-v5/src/ast"
-	"Compiler/c-monkey-v5/src/lexer"
+	"Compiler/c-monkey-v6/src/ast"
+	"Compiler/c-monkey-v6/src/lexer"
 	"fmt"
 	"testing"
 )
