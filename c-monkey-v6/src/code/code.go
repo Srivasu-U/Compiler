@@ -32,6 +32,9 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpArray
 	OpHash
 	OpIndex
+	OpCall
+	OpReturnValue
+	OpReturn
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -64,6 +67,9 @@ var definitions = map[Opcode]*Definition{
 	OpArray:              {"OpArray", []int{2}},
 	OpHash:               {"OpHash", []int{2}},
 	OpIndex:              {"OpIndex", []int{}},
+	OpCall:               {"OpCall", []int{}},
+	OpReturnValue:        {"OpReturnValue", []int{}},
+	OpReturn:             {"OpReturn", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {
