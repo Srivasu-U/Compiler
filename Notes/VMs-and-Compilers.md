@@ -101,6 +101,7 @@ virtualMachine(program); // Function call
     - So the point of stack machines/code is to be as efficient as possible with as little instructions.
 - Register machines are harder to build since register are an additional thing to be taken care of, alongside a stack.
     - Instead of constantly popping and pushing on to the stack, registers can help speed up this process
+- Interesting question and answer here: [click here](https://stackoverflow.com/questions/2719469/why-is-the-jvm-stack-based-and-the-dalvik-vm-register-based)
 
 ## Bytecode
 - Bytecode is called that way because the opcodes contained in each instruction are one byte in size
