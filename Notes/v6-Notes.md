@@ -32,3 +32,8 @@ fn() { let a = 1; }
     - `code.OpCall` => tell the VM to start executing the *object.CompiledFunction sitting on top of the stack.
     - `code.OpReturnValue` => tell the VM to return the value on top of the stack to the calling context and to resume execution there.
     - `code.OpReturn` => similar to code.OpReturnValue, except that there is no explicit value to return but an implicit vm.Null.
+
+- The way we depict function scopes on the stack is by using the `scopes` value in the `Compiler` struct
+    - `scopes` is just an array of `CompilationScope`s, which is a new struct, and we push new scopes into that "stack" when we start compiling a function
+        - `CompilationScope` is a struct of instruction that are moved out from the `Compiler` struct
+    - After compilation, it is popped off `scopes` and put into a new `*object.CompiledFunction`
