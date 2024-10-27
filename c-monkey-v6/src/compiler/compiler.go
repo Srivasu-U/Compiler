@@ -265,10 +265,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 
-		if c.lastInstructionIs(code.OpPop) {
+		if c.lastInstructionIs(code.OpPop) { // The last value from  a function should never be popped, only returned
 			c.replaceLastPopWithReturn()
 		}
-		if !c.lastInstructionIs(code.OpReturnValue) {
+		if !c.lastInstructionIs(code.OpReturnValue) { // Basically, this happens only when the function block was empty
 			c.emit(code.OpReturn)
 		}
 
