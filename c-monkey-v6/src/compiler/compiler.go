@@ -282,6 +282,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 		c.emit(code.OpReturnValue)
+
+	case *ast.CallExpression:
+		err := c.Compile(node.Function)
+		if err != nil {
+			return err
+		}
+		c.emit(code.OpCall)
 	}
 
 	return nil
@@ -378,13 +385,13 @@ func (c *Compiler) enterScope() {
 		previousInstruction: EmittedInstruction{},
 	}
 	c.scopes = append(c.scopes, scope)
-	c.scopeIndex++
+	c.scopeIndex++ // Bumping up scope index to indicate the addition of a new functional scope
 }
 
 func (c *Compiler) leaveScope() code.Instructions {
 	instructions := c.currentInstructions()
 	c.scopes = c.scopes[:len(c.scopes)-1]
-	c.scopeIndex--
+	c.scopeIndex-- // Decrementing the scope index to indicate the removal of the functional scope after compilation
 
 	return instructions
 }
