@@ -37,3 +37,9 @@ fn() { let a = 1; }
     - `scopes` is just an array of `CompilationScope`s, which is a new struct, and we push new scopes into that "stack" when we start compiling a function
         - `CompilationScope` is a struct of instruction that are moved out from the `Compiler` struct
     - After compilation, it is popped off `scopes` and put into a new `*object.CompiledFunction`
+
+- The start of the function call is that we put the function we want to call on the stack
+    - `OpCall` is the function call instruction
+    - The VM executed the function instructions and then pops the function of the stack, to replace it with the return value
+        - If there is no return value, only the function is popped
+        - That is, the popping is implicitly built into the VM
