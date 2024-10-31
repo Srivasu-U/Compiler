@@ -47,7 +47,7 @@ func New(bytecode *compiler.Bytecode) *VM {
 	mainFrame := NewFrame(mainFn)                                           // Creating a function for main
 
 	frames := make([]*Frame, MaxFrames) // Creating a frame for the main
-	frames[0] = mainFrame
+	frames[0] = mainFrame               // Main function is the first frame
 
 	return &VM{
 		constants: bytecode.Constants,
@@ -58,7 +58,7 @@ func New(bytecode *compiler.Bytecode) *VM {
 		globals: make([]object.Object, GlobalsSize),
 
 		frames:      frames,
-		framesIndex: 1,
+		framesIndex: 1, // Pointing to the next empty index, not the actual "top"
 	}
 }
 
@@ -199,6 +199,40 @@ func (vm *VM) Run() error {
 			left := vm.pop()
 
 			err := vm.executeIndexExpression(left, index)
+			if err != nil {
+				return err
+			}
+
+		case code.OpCall:
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
+			if !ok {
+				return fmt.Errorf("calling non-function")
+			}
+			frame := NewFrame(fn) // Get new frame from frame.go
+
+			/* Push frame on to VM frame stack frame.
+			Essentially, this modifies the currentFrame() that the VM is in, so after this happens,
+			the rest of the execution will be function first
+			When the frame is finally popped as part of the return statement executions, that is when the flow will return to the
+			original frame of the execution */
+			vm.pushFrame(frame)
+
+		case code.OpReturnValue:
+			returnValue := vm.pop() // The latest element on the stack should be the return value
+
+			vm.popFrame() // Pop the latest executed function, so that the next execution happens in the main flow
+			vm.pop()      // Implicitly pop the compiled function off the stack too
+
+			err := vm.push(returnValue)
+			if err != nil {
+				return err
+			}
+
+		case code.OpReturn:
+			vm.popFrame()
+			vm.pop()
+
+			err := vm.push(Null)
 			if err != nil {
 				return err
 			}
