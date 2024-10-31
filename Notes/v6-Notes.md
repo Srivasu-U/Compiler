@@ -43,3 +43,27 @@ fn() { let a = 1; }
     - The VM executed the function instructions and then pops the function of the stack, to replace it with the return value
         - If there is no return value, only the function is popped
         - That is, the popping is implicitly built into the VM
+
+
+### Frames
+- With how the VM handles execution of functions, non-linear execution has already been tried out once with jump instructions
+    - The additional challenge here is that after first "jumping" to the function execution, we also need to "jump back" to the original location of the function call instruction to maintain order
+- We can use something called a `frame` or also called a `call frame` or `stack frame`
+    - This is the data structure that hold execution relevant information (whatever that means)
+    - Frames are part of the stack itself, not separate
+- Frames are where data such as the return address, arguments to the current function and local variables are stored
+- As part of the stack, frames are easy to pop off after the function is done executing
+- If assembly language was actually used to build a machine, then we would have to think about `memory addresses` in a much more real way
+    - But since we are just building a virtual machine, we have more freedom in terms of how to create and store frames
+- Hence, a `frame` for us is a struct built as such
+```
+type Frame struct {
+    fn *object.CompiledFunction
+    ip int // The instruction pointer within this particular frame
+}
+```
+- With the addition of frames, we have two options
+    - Change the entire VM to use only frames when calling/executing functions
+    - Change the VM with treats the `main` function like a function as well, which is what we will do
+        - This is much simpler to learn and generally a more elegant solution since we already have so much of the VM already built
+- This is good because our test suite can actually validate that none of the preexisting behaviours change with this new addition
