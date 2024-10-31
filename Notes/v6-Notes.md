@@ -41,6 +41,7 @@ fn() { let a = 1; }
 - The start of the function call is that we put the function we want to call on the stack
     - `OpCall` is the function call instruction
     - The VM executed the function instructions and then pops the function of the stack, to replace it with the return value
+        - Since functions are treated as literals as well `OpConstant` automatically pushed the function on to the stack. This is why the function needs to be implicitly popped to keep the stack clean 
         - If there is no return value, only the function is popped
         - That is, the popping is implicitly built into the VM
 
@@ -67,3 +68,5 @@ type Frame struct {
     - Change the VM with treats the `main` function like a function as well, which is what we will do
         - This is much simpler to learn and generally a more elegant solution since we already have so much of the VM already built
 - This is good because our test suite can actually validate that none of the preexisting behaviours change with this new addition
+- Essentially, the function is pushed on to both the stack and the frames
+    - I am not fully certain of the nuances of the relationship between frames and stack
