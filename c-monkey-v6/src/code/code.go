@@ -35,6 +35,8 @@ const ( // Each Opcode is going to have a readable name instead of some arbitrar
 	OpCall
 	OpReturnValue
 	OpReturn
+	OpGetLocal
+	OpSetLocal
 )
 
 type Definition struct { // To keep track of how many operands an opcode has and make it more readable
@@ -70,6 +72,8 @@ var definitions = map[Opcode]*Definition{
 	OpCall:               {"OpCall", []int{}},
 	OpReturnValue:        {"OpReturnValue", []int{}},
 	OpReturn:             {"OpReturn", []int{}},
+	OpGetLocal:           {"OpGetLocal", []int{1}},
+	OpSetLocal:           {"OpSetLocal", []int{1}},
 }
 
 func Lookup(op byte) (*Definition, error) {
@@ -99,6 +103,8 @@ func Make(op Opcode, operands ...int) []byte {
 	for i, o := range operands {
 		width := def.OperandWidths[i]
 		switch width {
+		case 1:
+			instruction[offset] = byte(o)
 		case 2:
 			binary.BigEndian.PutUint16(instruction[offset:], uint16(o))
 		}

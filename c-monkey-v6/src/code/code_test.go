@@ -14,6 +14,7 @@ func TestMake(t *testing.T) {
 		65534 evaluates to 0xFF 0xFE which makes it easier to compare
 		*/
 		{OpAdd, []int{}, []byte{byte(OpAdd)}},
+		{OpGetLocal, []int{255}, []byte{byte(OpGetLocal), 255}},
 	}
 
 	for _, tt := range tests {
