@@ -70,3 +70,10 @@ type Frame struct {
 - This is good because our test suite can actually validate that none of the preexisting behaviours change with this new addition
 - Essentially, the function is pushed on to both the stack and the frames
     - I am not fully certain of the nuances of the relationship between frames and stack
+
+### Local bindings
+- Multiple local bindings must be kept track of across multiple functions, alongside the global bindings
+    - For this, another store is used
+- The opcodes for local bindings will be similar to global opcodes: `OpSetLocal` and `OpGetLocal`
+    - We'll also keep the width of this smaller at `1` instead, sort of an inherent and implicit limitations that a local binding set much never be greater than or equal to the global binding set
+    
