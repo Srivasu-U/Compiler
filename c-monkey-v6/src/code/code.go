@@ -114,7 +114,7 @@ func Make(op Opcode, operands ...int) []byte {
 	return instruction
 }
 
-func (ins Instructions) String() string {
+func (ins Instructions) String() string { // Purely a method that is used for test so we can more easily decode an instruction for comparison
 	var out bytes.Buffer
 
 	i := 0
@@ -150,7 +150,7 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 	return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
 }
 
-func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
+func ReadOperands(def *Definition, ins Instructions) ([]int, int) { // Helper method used to read the operands of an instruction during decoding
 	operands := make([]int, len(def.OperandWidths))
 	offset := 0
 
