@@ -204,14 +204,22 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 		symbol := c.symbolTable.Define(node.Name.Value)
-		c.emit(code.OpSetGlobal, symbol.Index)
+		if symbol.Scope == GlobalScope {
+			c.emit(code.OpSetGlobal, symbol.Index)
+		} else {
+			c.emit(code.OpSetLocal, symbol.Index)
+		}
 
 	case *ast.Identifier:
 		symbol, ok := c.symbolTable.Resolve(node.Value)
 		if !ok {
 			return fmt.Errorf("undefined vairable %s", node.Value) // Compile time error instead of runtime
 		}
-		c.emit(code.OpGetGlobal, symbol.Index)
+		if symbol.Scope == GlobalScope {
+			c.emit(code.OpGetGlobal, symbol.Index)
+		} else {
+			c.emit(code.OpGetLocal, symbol.Index)
+		}
 
 	case *ast.ArrayLiteral:
 		for _, e := range node.Elements {
@@ -386,6 +394,10 @@ func (c *Compiler) enterScope() {
 	}
 	c.scopes = append(c.scopes, scope)
 	c.scopeIndex++ // Bumping up scope index to indicate the addition of a new functional scope
+
+	// Passing in the current symbol table as the Outer value and getting back a new symbolTable.
+	// Setting this new enclosed symbol table as the main store for the current scope
+	c.symbolTable = NewEnclosedSymbolTable(c.symbolTable)
 }
 
 func (c *Compiler) leaveScope() code.Instructions {
@@ -393,6 +405,7 @@ func (c *Compiler) leaveScope() code.Instructions {
 	c.scopes = c.scopes[:len(c.scopes)-1]
 	c.scopeIndex-- // Decrementing the scope index to indicate the removal of the functional scope after compilation
 
+	c.symbolTable = c.symbolTable.Outer // Exiting the current symbolTable store
 	return instructions
 }
 
