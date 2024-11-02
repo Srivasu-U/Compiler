@@ -280,8 +280,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpReturn)
 		}
 
+		numLocals := c.symbolTable.numDefinitions // Number of variables in the local scope of the function
+
 		instructions := c.leaveScope() // Pop function scope
-		compiledFn := &object.CompiledFunction{Instructions: instructions}
+		compiledFn := &object.CompiledFunction{Instructions: instructions, NumLocals: numLocals}
 		c.emit(code.OpConstant, c.addConstant(compiledFn))
 
 	case *ast.ReturnStatement:
