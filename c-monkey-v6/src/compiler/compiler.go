@@ -213,7 +213,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 	case *ast.Identifier:
 		symbol, ok := c.symbolTable.Resolve(node.Value)
 		if !ok {
-			return fmt.Errorf("undefined vairable %s", node.Value) // Compile time error instead of runtime
+			return fmt.Errorf("undefined variable %s", node.Value) // Compile time error instead of runtime
 		}
 		if symbol.Scope == GlobalScope {
 			c.emit(code.OpGetGlobal, symbol.Index)
