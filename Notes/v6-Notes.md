@@ -76,4 +76,12 @@ type Frame struct {
     - For this, another store is used
 - The opcodes for local bindings will be similar to global opcodes: `OpSetLocal` and `OpGetLocal`
     - We'll also keep the width of this smaller at `1` instead, sort of an inherent and implicit limitations that a local binding set much never be greater than or equal to the global binding set
+- The symbol table in the compiler is also extended to understand and take care of the different scopes. This is the "new store" that was previously alluded to in point 1
+    - Essentially, we just tell the symbol when to enter or leave a scope
+    - At the end of the day, both `let` statements and `identifiers` are the same in global or local scope, they are both framed as `ast.LetStatement` or `ast.Indentifier` from the AST. 
+    - Within the new scope, the index restarts from 0
+- The symbol table struct now has a field `Outer` which is another `*SymbolTable`
+    - This `Outer` is the "parent" symbol table
+    - For the global scope, `Outer` is nil
+    - `Resolve()` is called recursively to check for a binding both within the current scope and any number of `Outer` scopes
     
