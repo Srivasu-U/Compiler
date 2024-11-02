@@ -28,7 +28,7 @@ fn() { let a = 1; }
     - Opcode for this is is `OpReturn` (maybe should have been `OpReturnNull`)
 
 - ***Summarizing all this we have***
-    - `object.CompiledFunction` => hold the instructions of a compiled function and to pass them from the compiler to the VM as part of the bytecode, as a constant.
+    - `object.CompiledFunction` => hold the instructions of a compiled function and to pass them from the compiler to the VM as part of the bytecode, as a constant. Also holds the number of local bindings used by the function
     - `code.OpCall` => tell the VM to start executing the *object.CompiledFunction sitting on top of the stack.
     - `code.OpReturnValue` => tell the VM to return the value on top of the stack to the calling context and to resume execution there.
     - `code.OpReturn` => similar to code.OpReturnValue, except that there is no explicit value to return but an implicit vm.Null.
@@ -49,6 +49,7 @@ fn() { let a = 1; }
 ### Frames
 - With how the VM handles execution of functions, non-linear execution has already been tried out once with jump instructions
     - The additional challenge here is that after first "jumping" to the function execution, we also need to "jump back" to the original location of the function call instruction to maintain order
+- This is a ***`temporary storage`*** that lives for as long as a function call
 - We can use something called a `frame` or also called a `call frame` or `stack frame`
     - This is the data structure that hold execution relevant information (whatever that means)
     - Frames are part of the stack itself, not separate
@@ -61,6 +62,7 @@ fn() { let a = 1; }
 type Frame struct {
     fn *object.CompiledFunction
     ip int // The instruction pointer within this particular frame
+    basePointer // The value of the stack pointer before the execution of a function begins
 }
 ```
 - With the addition of frames, we have two options
@@ -84,4 +86,24 @@ type Frame struct {
     - This `Outer` is the "parent" symbol table
     - For the global scope, `Outer` is nil
     - `Resolve()` is called recursively to check for a binding both within the current scope and any number of `Outer` scopes
-    
+
+### Within the VM
+- For storing local bindings within the VM, we have a couple of options
+    - Dynamically allocate a new slice with a function call that is used to store and retrieve local values with operands from the instruction as the index
+    - Use the stack itself to store execution relevant data
+- This project takes the second option. It is more complicated to understand but results in a lot of learning
+    - Also saves memory allocation
+    - This is the more commmon real world way of implementation as well, the common practice
+- Working:
+    - When an `OpCall` instruction is encountered, the current value of the stack pointer is stored for later use
+    - The stack pointer is then increased by the number of locals used by the function to be executed
+    - This results in a large empty space on the stack since we have just increased the stack pointer without actually pushing any values
+        - Below this space is all the previously pushed values, and above is the function's workspace
+    - The index of a local binding is the index to one of the holes on the stack 
+        - The index essentially serves as the offset
+    ![stackHoles](/Notes/assets/stackHoles.png)
+- Since we also stored the original position of the stack pointer, the restoration/reset of the stack after execution is easy
+- The number of local bindings used by a function is calculated at compiler time and passed on to the VM as part of the `*object.CompiledFunction` struct, as the field `NumLocals`
+- The original location of the stack pointer is part of the `Frame` as field `basePointer`
+    - `basePointer` is the conventional name for given for such a thing, ie, the pointer that points to the bottom of the stack of the current frame
+    - Conventionally, it can also be called the `frame pointer`
