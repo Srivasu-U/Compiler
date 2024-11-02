@@ -108,8 +108,6 @@ func testConstants(_ *testing.T, expected []interface{}, actual []object.Object)
 				return fmt.Errorf("constant %d - testInstructions failed: %s", i, err)
 			}
 		}
-
-		return nil
 	}
 
 	return nil
