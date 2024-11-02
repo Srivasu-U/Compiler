@@ -44,7 +44,7 @@ func (vm *VM) popFrame() *Frame {
 
 func New(bytecode *compiler.Bytecode) *VM {
 	mainFn := &object.CompiledFunction{Instructions: bytecode.Instructions} // Treating main() as a function on its own
-	mainFrame := NewFrame(mainFn)                                           // Creating a function for main
+	mainFrame := NewFrame(mainFn, 0)                                        // Creating a function for main
 
 	frames := make([]*Frame, MaxFrames) // Creating a frame for the main
 	frames[0] = mainFrame               // Main function is the first frame
@@ -154,7 +154,7 @@ func (vm *VM) Run() error {
 
 		case code.OpSetGlobal:
 			globalIndex := code.ReadUint16(ins[ip+1:]) // Read operand
-			vm.currentFrame().ip += 2                  // Increment to not read operand
+			vm.currentFrame().ip += 2                  // Increment to not read operand in next cycle
 
 			vm.globals[globalIndex] = vm.pop() // Pop the value from the stack and assign it in the globals store
 
@@ -208,7 +208,7 @@ func (vm *VM) Run() error {
 			if !ok {
 				return fmt.Errorf("calling non-function")
 			}
-			frame := NewFrame(fn) // Get new frame from frame.go
+			frame := NewFrame(fn, vm.sp) // Get new frame from frame.go
 
 			/* Push frame on to VM frame stack frame.
 			Essentially, this modifies the currentFrame() that the VM is in, so after this happens,
@@ -216,12 +216,13 @@ func (vm *VM) Run() error {
 			When the frame is finally popped as part of the return statement executions, that is when the flow will return to the
 			original frame of the execution */
 			vm.pushFrame(frame)
+			vm.sp = frame.basePointer + fn.NumLocals // Creating a "hole" for local bindings by incrementing the stack pointer NumLocal times
 
 		case code.OpReturnValue:
 			returnValue := vm.pop() // The latest element on the stack should be the return value
 
-			vm.popFrame() // Pop the latest executed function, so that the next execution happens in the main flow
-			vm.pop()      // Implicitly pop the compiled function off the stack too
+			frame := vm.popFrame()        // Pop the latest executed function, so that the next execution happens in the main flow
+			vm.sp = frame.basePointer - 1 // Reset/clean the stack after function execution
 
 			err := vm.push(returnValue)
 			if err != nil {
@@ -229,10 +230,28 @@ func (vm *VM) Run() error {
 			}
 
 		case code.OpReturn:
-			vm.popFrame()
-			vm.pop()
+			frame := vm.popFrame()
+			vm.sp = frame.basePointer - 1
 
 			err := vm.push(Null)
+			if err != nil {
+				return err
+			}
+
+		case code.OpSetLocal:
+			localIndex := code.ReadUint8(ins[ip+1:]) // Read operand, ie, the index in this case
+			vm.currentFrame().ip += 1                // Increment to not read operand in the next cycle
+
+			frame := vm.currentFrame()
+			vm.stack[frame.basePointer+int(localIndex)] = vm.pop() // Assign value in the stack with index as the offset
+
+		case code.OpGetLocal:
+			localIndex := code.ReadUint8(ins[ip+1:]) // Read operand
+			vm.currentFrame().ip += 1                // Increment to not read operand again in the next cycle
+
+			frame := vm.currentFrame()
+
+			err := vm.push(vm.stack[frame.basePointer+int(localIndex)])
 			if err != nil {
 				return err
 			}
