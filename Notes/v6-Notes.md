@@ -112,3 +112,4 @@ type Frame struct {
 ### Dealing with arguments/params
 - This is just a specialized way to declare new bindings in the local scope instead of using `let` statements
 - The `OpCall` opcode is given an operand that indicates how many arguments are passed
+- We just push the arguments on to the stack right after the function also has been pushed. So the offset for the function is also easily calculable, ie, just the number of arguments
