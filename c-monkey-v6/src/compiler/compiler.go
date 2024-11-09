@@ -288,7 +288,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 		numLocals := c.symbolTable.numDefinitions // Number of variables in the local scope of the function
 
 		instructions := c.leaveScope() // Pop function scope
-		compiledFn := &object.CompiledFunction{Instructions: instructions, NumLocals: numLocals}
+		compiledFn := &object.CompiledFunction{Instructions: instructions, NumLocals: numLocals, NumParameters: len(node.Parameters)}
 		c.emit(code.OpConstant, c.addConstant(compiledFn))
 
 	case *ast.ReturnStatement:

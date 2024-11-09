@@ -204,20 +204,13 @@ func (vm *VM) Run() error {
 			}
 
 		case code.OpCall:
+			numArgs := code.ReadUint8(ins[ip+1:])
 			vm.currentFrame().ip += 1
-			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
-			if !ok {
-				return fmt.Errorf("calling non-function")
-			}
-			frame := NewFrame(fn, vm.sp) // Get new frame from frame.go
 
-			/* Push frame on to VM frame stack frame.
-			Essentially, this modifies the currentFrame() that the VM is in, so after this happens,
-			the rest of the execution will be function first
-			When the frame is finally popped as part of the return statement executions, that is when the flow will return to the
-			original frame of the execution */
-			vm.pushFrame(frame)
-			vm.sp = frame.basePointer + fn.NumLocals // Creating a "hole" for local bindings by incrementing the stack pointer NumLocal times
+			err := vm.callFunction(int(numArgs))
+			if err != nil {
+				return err
+			}
 
 		case code.OpReturnValue:
 			returnValue := vm.pop() // The latest element on the stack should be the return value
@@ -476,4 +469,27 @@ func (vm *VM) buildHash(startIndex, endIndex int) (object.Object, error) {
 	}
 
 	return &object.Hash{Pairs: hashedPairs}, nil
+}
+
+func (vm *VM) callFunction(numArgs int) error {
+
+	fn, ok := vm.stack[vm.sp-1-numArgs].(*object.CompiledFunction)
+	if !ok {
+		return fmt.Errorf("calling non-function")
+	}
+
+	if numArgs != fn.NumParameters {
+		return fmt.Errorf("wrong number of arguments: want=%d, got=%d", fn.NumParameters, numArgs)
+	}
+	frame := NewFrame(fn, vm.sp-numArgs) // Get new frame from frame.go
+
+	/* Push frame on to VM frame stack frame.
+	Essentially, this modifies the currentFrame() that the VM is in, so after this happens,
+	the rest of the execution will be function first
+	When the frame is finally popped as part of the return statement executions, that is when the flow will return to the
+	original frame of the execution */
+	vm.pushFrame(frame)
+	vm.sp = frame.basePointer + fn.NumLocals // Creating a "hole" for local bindings by incrementing the stack pointer NumLocal times
+
+	return nil
 }
