@@ -1,4 +1,5 @@
 ## Functions
+- ***NOTE TO SELF***: Go through the entire function flow again to fully digest it. It is suprisingly complicated
 - Part of the challenge is that functions in Monkey are both a series of statements and first class citizens that can be passed around and returned
 - Other issues include
     - Passing params to methods
