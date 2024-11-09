@@ -4,6 +4,7 @@
     - Passing params to methods
     - Return values to original control position
 - Functions also evaluate to a value like every other literal. 
+    - Functions are also set as global bindings using `OpSetGlobal` and using `OpGetGlobal`
     - So we'll be treating functions as constants, at least from the point of view of a VM
     - That is, functions get compiled into a series of instructions and get added to the constant pool
     - Used in tandem with `OpConstant`
@@ -107,3 +108,7 @@ type Frame struct {
 - The original location of the stack pointer is part of the `Frame` as field `basePointer`
     - `basePointer` is the conventional name for given for such a thing, ie, the pointer that points to the bottom of the stack of the current frame
     - Conventionally, it can also be called the `frame pointer`
+
+### Dealing with arguments/params
+- This is just a specialized way to declare new bindings in the local scope instead of using `let` statements
+- The `OpCall` opcode is given an operand that indicates how many arguments are passed
