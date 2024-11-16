@@ -12,6 +12,7 @@
     - `c-monkey-v3` includes supports for conditionals, ie, `if...else...` blocks, and how to execute the consequence and alternatives
     - `c-monkey-v4` consists of support for let statements and accessing identifiers during execution (only in global scope)
     - `c-monkey-v5` supports strings, arrays and hashes
+    - `c-monkey-v6` adds the ability to use functions, and everything that comes along with it such as params and return types. This is probably the most complicated part of the project
     - `Notes` has the relevant notes for each subdirectory. Written as I went through each development stage
 
 ### Execution of code
