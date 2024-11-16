@@ -1,8 +1,8 @@
 package object
 
 import (
-	"Compiler/c-monkey-v6/src/ast"
-	"Compiler/c-monkey-v6/src/code"
+	"Compiler/c-monkey-v7/src/ast"
+	"Compiler/c-monkey-v7/src/code"
 	"bytes"
 	"fmt"
 	"hash/fnv"

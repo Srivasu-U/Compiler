@@ -1,8 +1,8 @@
 package vm
 
 import (
-	"Compiler/c-monkey-v6/src/code"
-	"Compiler/c-monkey-v6/src/object"
+	"Compiler/c-monkey-v7/src/code"
+	"Compiler/c-monkey-v7/src/object"
 )
 
 type Frame struct {
